@@ -28,13 +28,13 @@ def check_password_strength(password):
         feedback.append("Use a special character (!@#$%^&* etc).")
 
     if score <= 2:
-        strength = "Pfft! That looks WEAK"
+        strength = "Weak"
         color = "red"
     elif score in [3, 4]:
-        strength = "Hm! That looks MEDIUM"
+        strength = "Medium"
         color = "orange"
     else:
-        strength = "Damn! That's STRONG"
+        strength = "Strong"
         color = "green"
 
     return strength, color, feedback
@@ -91,11 +91,12 @@ length = st.slider("Select password length", 8, 32, 12)
 if st.button("Generate Password"):
     password, success = generate_password(length)
     if success:
-        st.success(f"Generated Password: `{password}`")
+        st.session_state.generated_password = password  # Save to session state to avoid losing it
+        st.text(password)  # Show the password for the user
         
-        # Copy to Clipboard Button
+        # Copy to Clipboard Button (doesn't re-render)
         if st.button("Copy to Clipboard"):
-            pyperclip.copy(password)
+            pyperclip.copy(st.session_state.generated_password)
             st.success("Password copied to clipboard!")
     else:
         st.error(password)
